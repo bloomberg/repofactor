@@ -1,0 +1,29 @@
+#!/usr/bin/env perl
+
+# Script to use in a filter branch chain to remove unwanted blobs.
+# E.g.
+# --index-filter '
+#     git ls-files -s |
+#     this-script |
+#     git update-index --index-info
+# '
+
+use strict;
+use warnings;
+
+my %unwanted = (
+@@BLOBS_TO_REMOVE@@
+);
+
+while (<>) {
+    if (/(\d+) ([[:xdigit:]]{40}) 0\t(.*)$/) {
+        my ($id, $path) = ($2, $3);
+        if (exists($unwanted{$id})) {
+            print "0 0000000000000000000000000000000000000000 0\t$path\n"
+        }
+# e.g. remove paths unconditionally
+#        elsif ($path =~ m|^build/bin/|) {
+#            print "0 0000000000000000000000000000000000000000 0\t$path\n"
+#        }
+    }
+}

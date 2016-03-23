@@ -1,0 +1,98 @@
+#!/usr/bin/env bash
+# vim: noet tw=80 ts=8 sw=8 syn=sh:
+
+# The "oldest" commits only on the old history
+old_history_commits=(@@OLD_HISTORY_COMMITS@@)
+
+# The "oldest" commits only on the new history
+new_history_commits=(@@NEW_HISTORY_COMMITS@@)
+
+die_stdin () {
+	cat >&2
+	exit 1
+}
+
+die () {
+	echo >&2 "$*"
+	exit 1
+}
+
+history_contains_any () {
+	for commit in "$@"
+	do
+		git rev-parse --quiet --verify "$commit^{commit}" >/dev/null ||
+			continue
+
+		git merge-base --is-ancestor "$commit" HEAD &&
+			return 0
+	done
+	return 1
+}
+
+if ! history_contains_any "${old_history_commits[@]}"
+then
+	echo >&2 "This branch is already rebased onto the rewritten history"
+	exit 0
+fi
+
+if history_contains_any "${new_history_commits[@]}"
+then
+	die_stdin <<-EOF
+		!!! WARNING WARNING WARNING !!!
+		- This branch includes both pre-rewrite and post-rewrite history
+		- DO NOT push this branch
+		- Step away from the keyboard
+		- Seek immediate assistance
+	EOF
+fi
+
+get_commit_map_sha () {
+	commit_map=
+	while read obj
+	do
+		if [[ -z $commit_map ]]
+		then
+			commit_map=$obj
+		else
+			[[ $commit_map = "$obj" ]] ||
+				return 1
+		fi
+	done < <(git show-ref --hash rewrite-commit-map)
+	[[ -n "$commit_map" ]] ||
+		return 1
+	echo "$commit_map"
+}
+
+# If there's no rewrite-commit-map branch, then there's nothing to do
+commit_map_sha=$(get_commit_map_sha) ||
+    exit 0
+
+declare -A the_commit_map
+
+while read old new
+do
+	[[ -n $old ]] && [[ -n $new ]] &&
+		the_commit_map[$old]=$new
+done < <(git cat-file blob "$commit_map_sha":commit-map.txt)
+
+map_commit () {
+	mapped_commit=${the_commit_map[$1]}
+	[[ -n $mapped_commit ]] &&
+	echo "$mapped_commit"
+}
+
+while read -r merge_base
+do
+	target=$(map_commit "$merge_base") && break
+done < <(git rev-list HEAD)
+
+[[ -n $merge_base ]] ||
+	die "Failed to determine a mappable merge-base"
+
+[[ -n $target ]] ||
+	die "Failed to find equivalent commit for $merge_base in the new history"
+
+git rev-parse --quiet --verify "$target^{commit}" >/dev/null ||
+	die "Determined target commit $target, but this commit is not in the current repository"
+
+git rebase --onto "$target" "$merge_base"
