@@ -10,7 +10,7 @@ else
 fi
 
 git cat-file --batch-all-objects --batch-check='%(objectname) %(objectsize:disk) %(objectsize) %(objecttype) %(deltabase)' --buffer |
-    awk -O '{ if ($4 == "blob") { print $1, $2, $3, $5 }}' |
+    awk '{ if ($4 == "blob") { print $1, $2, $3, $5 }}' |
     "$(dirname "$0")"/fillout-delta.pl |
-    awk -O "$script"
+    awk "$script"
 
