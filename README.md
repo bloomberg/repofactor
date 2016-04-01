@@ -20,7 +20,7 @@ Here is a sample sequence of commands showing typical usage:
 
 - Generate a sorted list of objects with file information
 
-  `generate-larger-than.sh 50000 | sort -k2n | add-file-info.sh >../largeobjs.txt`
+  `generate-larger-than.sh 50000 | sort -k3n | add-file-info.sh >../largeobjs.txt`
 
 - Make a report showing the summary of each commit together with the paths which
   introduce the large objects, their uncompressed size and file information

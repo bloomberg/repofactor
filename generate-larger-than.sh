@@ -9,8 +9,8 @@ else
     script='{ if ($(NF - 1) >= '$1') { print }}'
 fi
 
-git cat-file --batch-all-objects --batch-check='%(objectname) %(objectsize:disk) %(objectsize) %(objecttype) %(deltabase)' --buffer |
-    awk '{ if ($4 == "blob") { print $1, $2, $3, $5 }}' |
+git cat-file --batch-all-objects --batch-check='%(objectname) %(objectsize) %(objecttype)' --buffer |
+    awk '{ if ($3 == "blob") { print $1, $2 }}' |
     "$(dirname "$0")"/fillout-delta.pl |
     awk "$script"
 
