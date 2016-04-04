@@ -14,18 +14,18 @@ Here is a sample sequence of commands showing typical usage:
 
 - Run these tools from the repository undergoing analysis and cleaning.
 
-- Work out a suitable threshold size by running `generate-larger-than.sh` with
+- Work out a suitable threshold size by running `generate-larger-than` with
   experimental parameters. 50000 might be a good starting point. The size is
   "average bytes after compression by Git".
 
 - Generate a sorted list of objects with file information
 
-  `generate-larger-than.sh 50000 | sort -k3n | add-file-info.sh >../largeobjs.txt`
+  `generate-larger-than 50000 | sort -k3n | add-file-info >../largeobjs.txt`
 
 - Make a report showing the summary of each commit together with the paths which
   introduce the large objects, their uncompressed size and file information
 
-  `report-on-large-objects.sh ../largeobjs.txt`
+  `report-on-large-objects ../largeobjs.txt`
 
 # Filtering out large blobs
 
@@ -40,7 +40,7 @@ directory (defaults to the current directory).
 - Generate a remove script
 
   ```
-  make-remove-blobs.pl large-objects.txt >"$RFWORK_DIR"/remove-blobs.pl
+  make-remove-blobs large-objects.txt >"$RFWORK_DIR"/remove-blobs.pl
   chmod +x "$RFWORK_DIR"/remove-blobs.pl
   ```
 
@@ -49,12 +49,12 @@ directory (defaults to the current directory).
 
 - Run the filter branch
 
-  `run-filter-branch.sh`
+  `run-filter-branch`
 
 - Create a new "easy rebase" script for moving work-in-progess branches from the
   old history to the new history
 
-  `make-mtnh.pl >"$RFWORK_DIR"/move-to-new-history`
+  `make-mtnh >"$RFWORK_DIR"/move-to-new-history`
 
 - Push the rewritten refs and the `rewrite-commit-map` branch to all central
   repositories

@@ -27,7 +27,7 @@ git read-tree --empty &&
 # read from stdin
 blob=$(tac | git hash-object -w --stdin) &&
 git update-index --add --cacheinfo 100644,"$blob",commit-map.txt &&
-blob=$("$(dirname "$0")/make-mtnh.pl" | git hash-object -w --stdin) &&
+blob=$("$(dirname "$0")/make-mtnh" | git hash-object -w --stdin) &&
 git update-index --add --cacheinfo 100755,"$blob",move-to-new-history.sh &&
 tree=$(git write-tree) || die Failed to create new tree
 
