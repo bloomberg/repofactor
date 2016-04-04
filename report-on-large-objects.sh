@@ -14,6 +14,6 @@ then
 fi
 
 cut -d' ' -f1 "$1" | "$(dirname "$0")"/find-blob.pl --all >"$tmp_file" &&
-cut -d' ' -f1,4,7- "$1" | "$(dirname "$0")"/show-interesting.pl "$tmp_file"
+"$(dirname "$0")"/show-interesting.pl "$tmp_file" <"$1"
 
 rm "$tmp_file"
