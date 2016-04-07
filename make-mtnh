@@ -55,7 +55,7 @@ my $new_commits = join " ", virtual_roots(\@ref_pairs, 0);
 my $old_commits_re = qr'@@OLD_HISTORY_COMMITS@@';
 my $new_commits_re = qr'@@NEW_HISTORY_COMMITS@@';
 
-open my $template, "<", "$Bin/move-to-new-history.sh.tmpl" or
+open my $template, "<", "$Bin/templates/move-to-new-history.sh.tmpl" or
     die "Failed to open template file";
 
 while (<$template>) {

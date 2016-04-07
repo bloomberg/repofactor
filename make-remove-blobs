@@ -9,7 +9,7 @@ if (scalar(@ARGV) != 1) {
     die "Must supply list of blobs to remove as input";
 }
 
-open my $template, "<", "$Bin/remove-blobs.pl.tmpl" or
+open my $template, "<", "$Bin/templates/remove-blobs.pl.tmpl" or
     die "Failed to open template file";
 
 while (<$template>) {
