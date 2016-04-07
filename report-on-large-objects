@@ -14,8 +14,8 @@ then
     exit 1
 fi
 
-cut -d' ' -f1 "$1" | "$(dirname "$0")"/find-blob.pl --all >"$tmp_file" &&
-"$(dirname "$0")"/show-interesting.pl "$tmp_file" <"$1"
+cut -d' ' -f1 "$1" | "$(dirname "$0")"/scripts/find-blob --all >"$tmp_file" &&
+"$(dirname "$0")"/scripts/show-interesting "$tmp_file" <"$1"
 
 rm "$tmp_file"
 

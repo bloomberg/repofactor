@@ -23,7 +23,7 @@ git filter-branch\
  --tag-name-filter cat\
  -- --all\
  7>"$RFWORK_DIR/filter-map.txt" &&
-"$(dirname "$0")"/update-commit-map-branch.sh <"$RFWORK_DIR/filter-map.txt"
+"$(dirname "$0")"/scripts/update-commit-map-branch <"$RFWORK_DIR/filter-map.txt"
 
 #   Copyright (C) 2015,2016 Bloomberg Finance L.P.
 #

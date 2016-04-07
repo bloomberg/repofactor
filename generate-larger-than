@@ -11,7 +11,7 @@ fi
 
 git cat-file --batch-all-objects --batch-check='%(objectname) %(objectsize) %(objecttype)' --buffer |
     awk '{ if ($3 == "blob") { print $1, $2 }}' |
-    "$(dirname "$0")"/fillout-delta.pl |
+    "$(dirname "$0")"/scripts/fillout-delta |
     awk "$script"
 
 #   Copyright (C) 2015,2016 Bloomberg Finance L.P.
