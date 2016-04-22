@@ -9,7 +9,7 @@ git update-index --index-info'
 # SC2016: Expressions don't expand in single quotes, use double quotes for that.
 # shellcheck disable=SC2016
 commit_filter='tmp=$(git_commit_non_empty_tree "$@");
-[[ $GIT_COMMIT = $tmp ]] || echo >&7 $GIT_COMMIT $tmp;
+test "$GIT_COMMIT" = "$tmp" || echo >&7 "$GIT_COMMIT $tmp";
 echo $tmp'
 
 : "${RFWORK_DIR:=$PWD}"
